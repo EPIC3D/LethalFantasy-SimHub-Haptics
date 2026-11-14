@@ -1,0 +1,34 @@
+[Logging]
+EnableDebugLogging = false
+
+[Haptics - Footsteps]
+IntensityMultiplier = 2
+SeatGain = 1
+LowerBackGain = 1.35
+MidBackGain = 1
+UpperBackGain = 0.9
+BassGain = 0.85
+
+[Haptics - Growth]
+ScaleRateForFullResponse = 0.05
+IntensityAt30Meters = 0.01
+IntensityAt90Meters = 0.05
+IntensityAt1440Meters = 0.5
+IntensityAt23040Meters = 1
+BassGain = 0.18
+
+[Haptics - Heartbeat]
+MotorIntensity = 0.28
+ElevatedMotorIntensity = 0.3
+PulseDurationMs = 180
+
+[Haptics - Impacts]
+TrapExplosionIntensity = 0.4
+StompHitIntensity = 0.55
+PlayerDamageIntensity = 0.3
+FlyingStunIntensity = 0.42
+StunKnockupIntensity = 0.36
+KnockupIntensity = 0.3
+
+[Haptics - Propagation]
+DelayBetweenZonesSeconds = 0.06

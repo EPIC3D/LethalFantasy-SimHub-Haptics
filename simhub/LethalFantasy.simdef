@@ -1,0 +1,95 @@
+{
+  "TelemetryBehaviour": {
+    "GameFamily": 1,
+    "DefaultMaxSpeed": 40.0,
+    "HasRumbleStripsContactSurface": true,
+    "AllowGimbleLockSanitizer": false
+  },
+  "TelemetryDefinition": {
+    "LayoutMajorVersion": 1,
+    "LayoutMinorVersion": 0,
+    "ProtocolVersion": 1,
+    "Fields": [
+      {
+      "Name": "BassShaker",
+      "DisplayName": "Bass Shaker",
+      "Comment": "Spare normalized output for a bass shaker or Buttkicker (0-1)",
+        "BinaryType": 8,
+        "TypeName": "CustomTelemetryField"
+    },
+      {
+        "Name": "HapticUpperBackLeft",
+        "DisplayName": "Upper Back Left Haptic",
+        "Comment": "Normalized output for the upper-left back motor (0-1)",
+        "BinaryType": 8,
+        "TypeName": "CustomTelemetryField"
+      },
+      {
+        "Name": "HapticUpperBackRight",
+        "DisplayName": "Upper Back Right Haptic",
+        "Comment": "Normalized output for the upper-right back motor (0-1)",
+        "BinaryType": 8,
+        "TypeName": "CustomTelemetryField"
+      },
+      {
+        "Name": "HapticMidBackLeft",
+        "DisplayName": "Mid Back Left Haptic",
+        "Comment": "Normalized output for the mid-left back motor (0-1)",
+        "BinaryType": 8,
+        "TypeName": "CustomTelemetryField"
+      },
+      {
+        "Name": "HapticMidBackRight",
+        "DisplayName": "Mid Back Right Haptic",
+        "Comment": "Normalized output for the mid-right back motor (0-1)",
+        "BinaryType": 8,
+        "TypeName": "CustomTelemetryField"
+      },
+      {
+        "Name": "HapticLowerBackLeft",
+        "DisplayName": "Lower Back Left Haptic",
+        "Comment": "Normalized output for the lower-left back motor (0-1)",
+        "BinaryType": 8,
+        "TypeName": "CustomTelemetryField"
+      },
+      {
+        "Name": "HapticLowerBackRight",
+        "DisplayName": "Lower Back Right Haptic",
+        "Comment": "Normalized output for the lower-right back motor (0-1)",
+        "BinaryType": 8,
+        "TypeName": "CustomTelemetryField"
+      },
+      {
+        "Name": "HapticSeatLeft",
+        "DisplayName": "Seat Left Haptic",
+        "Comment": "Normalized output for the left seat-base motor (0-1)",
+        "BinaryType": 8,
+        "TypeName": "CustomTelemetryField"
+      },
+      {
+        "Name": "HapticSeatRight",
+        "DisplayName": "Seat Right Haptic",
+        "Comment": "Normalized output for the right seat-base motor (0-1)",
+        "BinaryType": 8,
+        "TypeName": "CustomTelemetryField"
+      }
+    ]
+  },
+  "ManagerVersion": 2,
+  "GameSignature": 1531983396,
+  "TelemetrySignature": 450118767,
+  "Name": "LethalFantasy",
+  "UniqueId": "530205f6-c531-4c7a-b079-4e73679e2910",
+  "DefaultUDPPort": 5000,
+  "DetectionProcesses": [
+    {
+      "ProcessName": "LethalFantasy",
+      "FileChecks": []
+    }
+  ],
+  "SimStartCommand": null,
+  "SimStartArguments": null,
+  "UseExtractorProcess": false,
+  "ExtractorProcessCommand": null,
+  "IconPath": "LF.jpg"
+}

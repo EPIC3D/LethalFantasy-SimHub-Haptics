@@ -1,0 +1,110 @@
+{
+    "CarChoices":  [
+
+                   ],
+    "IncludeOutputSettingsInProfile":  false,
+    "UnmuteEffectsAfterSimhubRestart":  true,
+    "EffectsContainers":  [
+                              {
+                                  "ContainerType":  "CustomEffectContainer",
+                                  "IsEnabled":  true,
+                                  "Gain":  100.0,
+                                  "Description":  "SEAT",
+                                  "FrontLeftFormula":  {
+                                                           "Expression":  "100 * [GameRawData.Custom_HapticLowerBackLeft]"
+                                                       },
+                                  "FrontRightFormula":  {
+                                                            "Expression":  "100 * [GameRawData.Custom_HapticLowerBackRight]"
+                                                        },
+                                  "RearLeftFormula":  {
+                                                          "Expression":  "100 * [GameRawData.Custom_HapticSeatLeft]"
+                                                      },
+                                  "RearRightFormula":  {
+                                                           "Expression":  "100 * [GameRawData.Custom_HapticSeatRight]"
+                                                       },
+                                  "ForceFrequencies":  false,
+                                  "FrontLeftFrequencyFormula":  {
+                                                                    "Expression":  ""
+                                                                },
+                                  "FrontRightFrequencyFormula":  {
+                                                                     "Expression":  ""
+                                                                 },
+                                  "RearLeftFrequencyFormula":  {
+                                                                   "Expression":  ""
+                                                               },
+                                  "RearRightFrequencyFormula":  {
+                                                                    "Expression":  ""
+                                                                },
+                                  "AlwaysExecute":  false,
+                                  "ContainerId":  "062f6067-d602-451f-93fd-3406c556468a",
+                                  "AggregationMode":  "Corners",
+                                  "Filter":  {
+                                                 "GammaValue":  1.0,
+                                                 "InputGain":  100.0,
+                                                 "MinimumForce":  0,
+                                                 "Threshold":  0,
+                                                 "FilterType":  "GammaFilter"
+                                             },
+                                  "Output":  {
+                                                 "AssignToChannelGroup":  true,
+                                                 "ChannelGroupName":  "seat",
+                                                 "OutputType":  "VibrationOutput"
+                                             }
+                              },
+                              {
+                                  "ContainerType":  "CustomEffectContainer",
+                                  "IsEnabled":  true,
+                                  "Gain":  100.0,
+                                  "Description":  "BACK",
+                                  "FrontLeftFormula":  {
+                                                           "Expression":  "100 * [GameRawData.Custom_HapticUpperBackLeft]"
+                                                       },
+                                  "FrontRightFormula":  {
+                                                            "Expression":  "100 * [GameRawData.Custom_HapticUpperBackRight]"
+                                                        },
+                                  "RearLeftFormula":  {
+                                                          "Expression":  "100 * [GameRawData.Custom_HapticMidBackLeft]"
+                                                      },
+                                  "RearRightFormula":  {
+                                                           "Expression":  "100 * [GameRawData.Custom_HapticMidBackRight]"
+                                                       },
+                                  "ForceFrequencies":  false,
+                                  "FrontLeftFrequencyFormula":  {
+                                                                    "Expression":  ""
+                                                                },
+                                  "FrontRightFrequencyFormula":  {
+                                                                     "Expression":  ""
+                                                                 },
+                                  "RearLeftFrequencyFormula":  {
+                                                                   "Expression":  ""
+                                                               },
+                                  "RearRightFrequencyFormula":  {
+                                                                    "Expression":  ""
+                                                                },
+                                  "AlwaysExecute":  false,
+                                  "ContainerId":  "44ca7604-9ae7-4018-9d3e-d410390b5ea3",
+                                  "AggregationMode":  "Corners",
+                                  "Filter":  {
+                                                 "GammaValue":  1.0,
+                                                 "InputGain":  100.0,
+                                                 "MinimumForce":  0,
+                                                 "Threshold":  7,
+                                                 "FilterType":  "GammaFilter"
+                                             },
+                                  "Output":  {
+                                                 "AssignToChannelGroup":  true,
+                                                 "ChannelGroupName":  "backrest",
+                                                 "OutputType":  "VibrationOutput"
+                                             }
+                              }
+                          ],
+    "AutoCalibrationRatio2":  100,
+    "OutputMode":  0,
+    "GlobalGain":  50.0,
+    "UseProfileGain":  false,
+    "LastLoaded":  "0001-01-01T00:00:00",
+    "Name":  "LethalFantasy - HF8 (example)",
+    "ProfileId":  "f8bd78c6-d7f8-4b1b-bbcb-e57f1fbe8464",
+    "GameCode":  "External_530205f6-c531-4c7a-b079-4e73679e2910",
+    "CarChoice":  null
+}

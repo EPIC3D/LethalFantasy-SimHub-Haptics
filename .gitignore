@@ -1,0 +1,20 @@
+# Build output
+bin/
+obj/
+dist/
+
+# Machine-specific game path
+GamePath.props
+
+# IDE / OS
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+Thumbs.db
+Desktop.ini
+
+# Never commit game or BepInEx binaries
+*.dll
+*.pdb
