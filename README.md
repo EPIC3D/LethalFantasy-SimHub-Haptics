@@ -19,6 +19,15 @@ drive the physical motors.
 Supports **LethalFantasy beta 1.0.2** (and multiple giantesses at once, e.g. the
 Twins). Version 1.0.0 targeted Alpha v9.1.0.
 
+**LethalFantasy** is made by **LadyAlice** – support the original game on
+[Patreon](https://www.patreon.com/cw/LadyAliceR18). This is an unofficial
+fan-made mod and is not affiliated with or endorsed by the game's creator.
+
+> **Disclaimer:** This software is provided "as is", without warranty of any
+> kind. Use it at your own risk. The author accepts no responsibility for any
+> damage, data loss, game issues or hardware problems (including haptic
+> devices) resulting from its use. See [LICENSE](LICENSE) for details.
+
 ## Download
 
 Get the ready-to-use package from the
