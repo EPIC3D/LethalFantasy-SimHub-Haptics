@@ -15,7 +15,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>SimHubTelemetry</AssemblyName>
     <RootNamespace>MyFirstPlugin</RootNamespace>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Product>LethalFantasy SimHub Haptics</Product>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>

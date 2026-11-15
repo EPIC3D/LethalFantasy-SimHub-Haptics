@@ -15,6 +15,11 @@ drive the physical motors.
 | Growth | A rising wave that follows the giantess' actual growth rate and size |
 | Heartbeat | Alternating left/right beats while you are held in a hug, following the game's own normal / flustered rhythm |
 | Stomp hit, trap explosion, damage, knockback | Directional impact pulses |
+| Pet (head stroking) | Upper-back motors following the stroking hand between the shoulders |
+| Lap | A gentle top-to-bottom caress wave, and a soft breathing swell while resting |
+| Foot massage | Whole-body pressure swells; step and crush hits |
+| Menu pickup (Akipo, Twins) | A squeeze when picked up and pokes while held |
+| Lift / set-down | A G-force feel on the seat when you are lifted or lowered |
 
 Supports **LethalFantasy beta 1.0.2** (and multiple giantesses at once, e.g. the
 Twins). Version 1.0.0 targeted Alpha v9.1.0.

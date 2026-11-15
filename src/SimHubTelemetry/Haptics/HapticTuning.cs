@@ -31,8 +31,90 @@ namespace MyFirstPlugin
         private static ConfigEntry<float> _stunKnockupIntensity;
         private static ConfigEntry<float> _knockupIntensity;
 
+        private static ConfigEntry<float> _petIntensity;
+        private static ConfigEntry<float> _lapIntensity;
+        private static ConfigEntry<float> _lapWaveDelaySeconds;
+        private static ConfigEntry<float> _footMassagePressureIntensity;
+        private static ConfigEntry<float> _footMassageBassGain;
+        private static ConfigEntry<float> _footMassageStepIntensity;
+        private static ConfigEntry<float> _footMassageCrushIntensity;
+        private static ConfigEntry<float> _interactionProximityFalloffRatio;
+        private static ConfigEntry<float> _petMotorFloor;
+        private static ConfigEntry<float> _footMassageContrast;
+        private static ConfigEntry<float> _liftIntensity;
+        private static ConfigEntry<float> _liftBassGain;
+        private static ConfigEntry<float> _liftAccelerationForFullResponse;
+        private static ConfigEntry<float> _liftTeleportDistance;
+        private static ConfigEntry<float> _grabIntensity;
+        private static ConfigEntry<float> _liftMaxPlausibleAcceleration;
+        private static ConfigEntry<float> _lapIdleLevel;
+        private static ConfigEntry<float> _lapIdleBreathSeconds;
+        private static ConfigEntry<float> _pokeIntensity;
+        private static ConfigEntry<float> _pokeMinimumDipRatio;
+
         internal static void Bind(ConfigFile config)
         {
+            _petIntensity = config.Bind(
+                "Haptics - Interactions", "PetIntensity", 0.50f,
+                "Peak strength of the petting signal on the two upper-back motors (0-1).");
+            _lapIntensity = config.Bind(
+                "Haptics - Interactions", "LapCaressIntensity", 0.25f,
+                "Peak strength of the lap caress wave on all motors (0-1).");
+            _lapWaveDelaySeconds = config.Bind(
+                "Haptics - Interactions", "LapCaressWaveDelaySeconds", 0.12f,
+                "Delay between motor zones of the top-to-bottom lap caress wave (0-0.4 seconds).");
+            _footMassagePressureIntensity = config.Bind(
+                "Haptics - Interactions", "FootMassagePressureIntensity", 0.38f,
+                "Peak strength of the whole-body foot massage pressure pulse (0-1).");
+            _footMassageBassGain = config.Bind(
+                "Haptics - Interactions", "FootMassageBassGain", 0.30f,
+                "Spare Bass Shaker gain for the foot massage pressure (0-1).");
+            _footMassageStepIntensity = config.Bind(
+                "Haptics - Interactions", "FootMassageStepIntensity", 0.75f,
+                "Strength of a foot massage step hit; scaled up by the requested step level (0-1).");
+            _footMassageCrushIntensity = config.Bind(
+                "Haptics - Interactions", "FootMassageCrushIntensity", 0.90f,
+                "Strength of the foot massage crush hit (0-1).");
+            _interactionProximityFalloffRatio = config.Bind(
+                "Haptics - Interactions", "ProximityFalloffRatio", 2.5f,
+                "A hand this many times farther than its closest observed distance gives no signal (1.2-10).");
+            _petMotorFloor = config.Bind(
+                "Haptics - Interactions", "PetMotorFloor", 0.25f,
+                "Minimum relative drive of a real petting stroke so the motors spin up (0-0.8).");
+            _footMassageContrast = config.Bind(
+                "Haptics - Interactions", "FootMassageContrast", 1.6f,
+                "Power curve of the foot massage pressure; higher = deeper valleys between swells (1-3).");
+            _liftIntensity = config.Bind(
+                "Haptics - Interactions", "LiftIntensity", 0.60f,
+                "Peak strength of the lift / set-down G-force effect, mostly on the seat (0-1).");
+            _liftBassGain = config.Bind(
+                "Haptics - Interactions", "LiftBassGain", 0.50f,
+                "Spare Bass Shaker gain for the lift / set-down effect (0-1).");
+            _liftAccelerationForFullResponse = config.Bind(
+                "Haptics - Interactions", "LiftAccelerationForFullResponse", 4.0f,
+                "Vertical camera acceleration (m/s^2) that gives the full lift effect (0.5-30).");
+            _liftTeleportDistance = config.Bind(
+                "Haptics - Interactions", "LiftTeleportDistance", 1.5f,
+                "Per-frame camera jumps larger than this (m) are camera cuts and are ignored (0.2-10).");
+            _lapIdleLevel = config.Bind(
+                "Haptics - Interactions", "LapIdleLevel", 0.45f,
+                "Peak of the soft breathing swell while resting in the lap, relative to LapCaressIntensity (0-1).");
+            _lapIdleBreathSeconds = config.Bind(
+                "Haptics - Interactions", "LapIdleBreathSeconds", 4.0f,
+                "Length of one breathing swell while resting in the lap (1-10 seconds).");
+            _liftMaxPlausibleAcceleration = config.Bind(
+                "Haptics - Interactions", "LiftMaxPlausibleAcceleration", 20.0f,
+                "Accelerations above this (m/s^2) are scene transitions / teleports and give no lift feedback (4-60).");
+            _grabIntensity = config.Bind(
+                "Haptics - Interactions", "GrabIntensity", 0.45f,
+                "Short squeeze when a giantess picks the player up in the menu (0-1).");
+            _pokeIntensity = config.Bind(
+                "Haptics - Interactions", "PokeIntensity", 0.75f,
+                "Strength of a poke while the player is held (0-1).");
+            _pokeMinimumDipRatio = config.Bind(
+                "Haptics - Interactions", "PokeMinimumDipRatio", 0.35f,
+                "How much closer (fraction) a hand must dart toward the player to count as a poke (0.05-0.9).");
+
             _footstepIntensityMultiplier = config.Bind(
                 "Haptics - Footsteps", "IntensityMultiplier", 2.0f,
                 "Overall footstep strength multiplier (0-5).");
@@ -129,6 +211,31 @@ namespace MyFirstPlugin
         internal static float FlyingStunIntensity => Read(_flyingStunIntensity, 0.42f, 0f, 1f);
         internal static float StunKnockupIntensity => Read(_stunKnockupIntensity, 0.36f, 0f, 1f);
         internal static float KnockupIntensity => Read(_knockupIntensity, 0.3f, 0f, 1f);
+
+        internal static float PetIntensity => Read(_petIntensity, 0.50f, 0f, 1f);
+        internal static float LapIntensity => Read(_lapIntensity, 0.25f, 0f, 1f);
+        internal static float LapWaveDelaySeconds => Read(_lapWaveDelaySeconds, 0.12f, 0f, 0.4f);
+        internal static float FootMassagePressureIntensity =>
+            Read(_footMassagePressureIntensity, 0.38f, 0f, 1f);
+        internal static float FootMassageBassGain => Read(_footMassageBassGain, 0.30f, 0f, 1f);
+        internal static float FootMassageStepIntensity => Read(_footMassageStepIntensity, 0.75f, 0f, 1f);
+        internal static float FootMassageCrushIntensity => Read(_footMassageCrushIntensity, 0.90f, 0f, 1f);
+        internal static float InteractionProximityFalloffRatio =>
+            Read(_interactionProximityFalloffRatio, 2.5f, 1.2f, 10f);
+        internal static float PetMotorFloor => Read(_petMotorFloor, 0.25f, 0f, 0.8f);
+        internal static float FootMassageContrast => Read(_footMassageContrast, 1.6f, 1f, 3f);
+        internal static float LiftIntensity => Read(_liftIntensity, 0.60f, 0f, 1f);
+        internal static float LiftBassGain => Read(_liftBassGain, 0.50f, 0f, 1f);
+        internal static float LiftAccelerationForFullResponse =>
+            Read(_liftAccelerationForFullResponse, 4f, 0.5f, 30f);
+        internal static float LapIdleLevel => Read(_lapIdleLevel, 0.45f, 0f, 1f);
+        internal static float LapIdleBreathSeconds => Read(_lapIdleBreathSeconds, 4f, 1f, 10f);
+        internal static float LiftMaxPlausibleAcceleration =>
+            Read(_liftMaxPlausibleAcceleration, 20f, 4f, 60f);
+        internal static float GrabIntensity => Read(_grabIntensity, 0.45f, 0f, 1f);
+        internal static float PokeIntensity => Read(_pokeIntensity, 0.75f, 0f, 1f);
+        internal static float PokeMinimumDipRatio => Read(_pokeMinimumDipRatio, 0.35f, 0.05f, 0.9f);
+        internal static float LiftTeleportDistance => Read(_liftTeleportDistance, 1.5f, 0.2f, 10f);
 
         internal static float GetGrowthMaxIntensity(float heightMeters)
         {

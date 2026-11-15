@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.2.0
+
+For **LethalFantasy beta 1.0.2**. No SimHub profile or `.simdef` change is
+needed; existing config files keep working (new keys are added with defaults).
+
+- New: **Pet** – head stroking on the two upper-back motors, following the
+  stroking hand and gliding between the left and right shoulder.
+- New: **Lap** – the caressing hand becomes a gentle top-to-bottom wave over the
+  whole body; while resting in the lap (e.g. during dialogue) a soft breathing
+  swell keeps the presence noticeable.
+- New: **Foot massage** – whole-body pressure that swells and fades with the
+  foot's motion; foot-massage steps hit harder with the requested level, and the
+  crush gives a strong hit.
+- New: **Menu pickup** (Akipo and the Twins) – a short squeeze when picked up,
+  and pokes from the other hand while held.
+- New: **Lift / set-down** – a G-force feel, mostly on the seat, when an
+  interaction lifts or lowers you (lap, hug, menu pickup, foot massage).
+  Scene-fade jumps and menu camera moves are filtered out.
+- New: all motors are zeroed immediately on game exit and on every scene change
+  (restart, return to lobby, main menu).
+- New: `[Haptics - Interactions]` settings section.
+
 ## 1.1.0
 
 Updated for **LethalFantasy beta 1.0.2**.

@@ -40,7 +40,7 @@ so you need the **BepInEx 5.4.x, Windows x64** build.
 You should see:
 
 ```
-Loading [Epicopy + Copilot SimHub Telemetry 1.1.0]
+Loading [Epicopy + Copilot SimHub Telemetry 1.2.0]
 First SimHub UDP telemetry packet sent (91 bytes).
 Haptic event patches active: Armature.PlayFootstepScreenShake, Giantess.UpdateScale, ...
 SimHub UDP telemetry sender initialized for 127.0.0.1:5000.

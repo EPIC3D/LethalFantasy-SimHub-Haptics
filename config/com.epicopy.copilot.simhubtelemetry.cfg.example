@@ -30,5 +30,27 @@ FlyingStunIntensity = 0.42
 StunKnockupIntensity = 0.36
 KnockupIntensity = 0.3
 
+[Haptics - Interactions]
+PetIntensity = 0.5
+LapCaressIntensity = 0.25
+LapCaressWaveDelaySeconds = 0.12
+FootMassagePressureIntensity = 0.38
+FootMassageBassGain = 0.3
+FootMassageStepIntensity = 0.75
+FootMassageCrushIntensity = 0.9
+ProximityFalloffRatio = 2.5
+PetMotorFloor = 0.25
+FootMassageContrast = 1.6
+LiftIntensity = 0.6
+LiftBassGain = 0.5
+LiftAccelerationForFullResponse = 4
+LiftTeleportDistance = 1.5
+LiftMaxPlausibleAcceleration = 20
+LapIdleLevel = 0.45
+LapIdleBreathSeconds = 4
+GrabIntensity = 0.45
+PokeIntensity = 0.75
+PokeMinimumDipRatio = 0.35
+
 [Haptics - Propagation]
 DelayBetweenZonesSeconds = 0.06

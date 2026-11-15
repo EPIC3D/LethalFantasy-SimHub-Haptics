@@ -39,6 +39,28 @@ FlyingStunIntensity = 0.42
 StunKnockupIntensity = 0.36
 KnockupIntensity = 0.3
 
+[Haptics - Interactions]
+PetIntensity = 0.5                     # 0..1
+PetMotorFloor = 0.25                   # 0..0.8, minimum drive of a real stroke
+LapCaressIntensity = 0.25              # 0..1
+LapCaressWaveDelaySeconds = 0.12       # 0..0.4
+LapIdleLevel = 0.45                    # 0..1, resting swell (relative), 0 = off
+LapIdleBreathSeconds = 4               # 1..10
+FootMassagePressureIntensity = 0.38    # 0..1
+FootMassageContrast = 1.6              # 1..3, higher = deeper valleys
+FootMassageBassGain = 0.3              # 0..1
+FootMassageStepIntensity = 0.75        # 0..1, scaled up by the step level
+FootMassageCrushIntensity = 0.9        # 0..1
+GrabIntensity = 0.45                   # 0..1
+PokeIntensity = 0.75                   # 0..1
+PokeMinimumDipRatio = 0.35             # 0.05..0.9
+ProximityFalloffRatio = 2.5            # 1.2..10
+LiftIntensity = 0.6                    # 0..1
+LiftBassGain = 0.5                     # 0..1
+LiftAccelerationForFullResponse = 4    # m/s^2
+LiftMaxPlausibleAcceleration = 20      # m/s^2, above = scene transition
+LiftTeleportDistance = 1.5             # m per frame, above = camera cut
+
 [Haptics - Propagation]
 DelayBetweenZonesSeconds = 0.06  # 0..0.2
 ```
@@ -109,6 +131,32 @@ Patches in `ImpactHaptics.cs`:
 - Successful stomp hit – stronger pulse toward the giantess' foot.
 - Player damage – directionless pulse.
 - Flying stun, stun knockup, knockup – pulse in the direction of the launch vector.
+
+### Interactions (Akipo events and menu pickup)
+
+Patches in `InteractionHaptics.cs`. Hand and foot motion is self-normalised:
+speed is compared with the recent peak of the same event and proximity with the
+closest distance seen, so the feel does not depend on giantess size or shoe type.
+
+| Interaction | Active during | Signal | Motors |
+| --- | --- | --- | --- |
+| Pet | `PetScratchIntro/Loop/Outro` | Hand motion relative to the player × proximity | Upper back, panned toward the hand; the far side keeps at least 40 % |
+| Lap | `LapCaressLoop`; `LapLoop` (resting) | Caressing hand motion; resting = breathing swell | All zones, wave from upper back down to the seat |
+| Foot massage | `FootMassageLoop`, `FootMassageCaressLoop` | Foot motion and flexing, shaped by `FootMassageContrast` | All zones together, plus bass |
+| Foot massage hits | `step` / `crush` animation events | Step level 0–3 | Whole-body impact |
+| Menu pickup | After the `grab` animation event until the behaviour ends | Squeeze on grab; pokes = a hand darting at least `PokeMinimumDipRatio` closer to the player | Whole body / mid back |
+| Lift / set-down | Lap, hug, menu pickup, foot massage | Vertical acceleration of the camera and/or the carrying hand or foot | Seat strongest, fading toward the upper back; downward phase at 60 % |
+
+The lift signal ignores per-frame jumps over `LiftTeleportDistance` and
+accelerations over `LiftMaxPlausibleAcceleration` (scene fades), and stays quiet
+for 0.4 s at the start of an interaction.
+
+## Zeroing
+
+All outputs are reset to zero on every scene change (restart, return to lobby,
+main menu). On game exit the plugin sends a few zeroed packets with the session
+marked as ended, so SimHub stops the motors immediately instead of waiting for
+its timeout.
 
 ## Debug logging
 

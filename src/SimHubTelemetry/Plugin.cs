@@ -15,7 +15,7 @@ namespace MyFirstPlugin
     [BepInPlugin(
         "com.epicopy.copilot.simhubtelemetry",
         "Epicopy + Copilot SimHub Telemetry",
-        "1.1.0")]
+        "1.2.0")]
     public class Plugin : BaseUnityPlugin
     {
         private const string SimHubHost = "127.0.0.1";
@@ -76,6 +76,7 @@ namespace MyFirstPlugin
                 };
                 _senderThread.Start();
                 Application.quitting += HandleApplicationQuitting;
+                UnityEngine.SceneManagement.SceneManager.activeSceneChanged += HandleSceneChanged;
 
                 HapticMixer.Reset();
                 _harmony = new Harmony("com.epicopy.copilot.simhubtelemetry");
@@ -107,6 +108,18 @@ namespace MyFirstPlugin
             Log?.LogWarning("BepInEx plugin component was destroyed; sender and mixer continue " +
                 "on the background thread. applicationIsQuitting=" +
                 _applicationQuitting + ".");
+        }
+
+        // Restart, return to lobby and menu buttons load a new scene; any pulse or
+        // interaction still in flight would otherwise keep the motors running
+        // across the cut.
+        private static void HandleSceneChanged(
+            UnityEngine.SceneManagement.Scene previous,
+            UnityEngine.SceneManagement.Scene next)
+        {
+            InteractionHaptics.ResetAll();
+            HapticMixer.Reset();
+            LogDebug("Scene changed to '" + next.name + "'; haptic outputs reset to zero.");
         }
 
         internal static void HandleApplicationQuitting()
@@ -227,6 +240,37 @@ namespace MyFirstPlugin
             return value == 0 ? 1UL : value;
         }
 
+        // SimHub keeps the last received values until its own timeout, so on
+        // shutdown explicitly send zeroed outputs and an ended session a few times
+        // (UDP may drop a packet) to stop the motors immediately.
+        private static void SendFinalZeroPackets()
+        {
+            if (_udpClient == null || _packetPointer == IntPtr.Zero || _packetBuffer == null)
+                return;
+
+            try
+            {
+                HapticMixer.Reset();
+                CopyChannelInputsToPacket();
+                _telemetryPacket.IsSessionRunning = 0;
+                _telemetryPacket.IsUserInControl = 0;
+                for (int i = 0; i < 3; i++)
+                {
+                    _telemetryPacket.PacketsCounter++;
+                    _telemetryPacket.SessionTimeSeconds = GetSessionTimeSeconds();
+                    Marshal.StructureToPtr(_telemetryPacket, _packetPointer, false);
+                    Marshal.Copy(_packetPointer, _packetBuffer, 0, _packetBuffer.Length);
+                    _udpClient.Send(_packetBuffer, _packetBuffer.Length);
+                    Thread.Sleep(5);
+                }
+                LogDebug("Final zeroed telemetry packets sent.");
+            }
+            catch (Exception ex)
+            {
+                Log?.LogWarning("Could not send final zeroed telemetry packets: " + ex.Message);
+            }
+        }
+
         private static void StopTelemetrySender(string reason)
         {
             if (_isShuttingDown)
@@ -234,6 +278,7 @@ namespace MyFirstPlugin
 
             _isShuttingDown = true;
             Application.quitting -= HandleApplicationQuitting;
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= HandleSceneChanged;
             Log?.LogInfo("Stopping SimHub UDP sender; reason: " + reason + ".");
             _senderRunning = false;
 
@@ -243,6 +288,7 @@ namespace MyFirstPlugin
                 _senderThread = null;
             }
 
+            SendFinalZeroPackets();
             _udpClient?.Close();
             _udpClient = null;
 

@@ -128,6 +128,64 @@ namespace MyFirstPlugin
             Interlocked.Increment(ref _heartbeatEvents);
         }
 
+        // Continuous interaction signals; a value older than this is treated as zero
+        // so a missed end event cannot leave motors running.
+        private const double InteractionStaleSeconds = 0.25;
+        private const double LapHistorySeconds = 1.5;
+        private static readonly List<GrowthSample> LapSamples = new List<GrowthSample>();
+        private static float _petIntensity;
+        private static float _petSide;
+        private static double _petUpdatedAt = -1.0;
+        private static float _massagePressure;
+        private static double _massageUpdatedAt = -1.0;
+
+        internal static void ReportPet(float intensity, float side)
+        {
+            lock (Sync)
+            {
+                _petIntensity = Clamp01(intensity);
+                _petSide = Clamp(side, -1f, 1f);
+                _petUpdatedAt = Plugin.GetSessionTimeSeconds();
+            }
+        }
+
+        internal static void ReportLapCaress(float intensity)
+        {
+            lock (Sync)
+            {
+                double sampleTime = Plugin.GetSessionTimeSeconds();
+                LapSamples.Add(new GrowthSample(sampleTime, Clamp01(intensity)));
+                for (int i = LapSamples.Count - 1; i >= 0; i--)
+                {
+                    if (sampleTime - LapSamples[i].Time > LapHistorySeconds)
+                        LapSamples.RemoveAt(i);
+                }
+            }
+        }
+
+        private static float _liftStrength;
+        private static float _liftDirection;
+        private static double _liftUpdatedAt = -1.0;
+
+        internal static void ReportLift(float strength, float direction)
+        {
+            lock (Sync)
+            {
+                _liftStrength = Clamp01(strength);
+                _liftDirection = direction;
+                _liftUpdatedAt = Plugin.GetSessionTimeSeconds();
+            }
+        }
+
+        internal static void ReportMassagePressure(float pressure)
+        {
+            lock (Sync)
+            {
+                _massagePressure = Clamp01(pressure);
+                _massageUpdatedAt = Plugin.GetSessionTimeSeconds();
+            }
+        }
+
         private static bool _heartbeatEnabled;
 
         internal static void SetHeartbeatEnabled(bool enabled)
@@ -234,6 +292,63 @@ namespace MyFirstPlugin
             AddGrowthZone(seatGrowth, 1f, ref seatLeft, ref seatRight);
             bass = Math.Max(bass, seatGrowth * HapticTuning.GrowthBassGain);
 
+            // Petting: only the two upper-back motors, balanced toward the hand side.
+            if (now - _petUpdatedAt < InteractionStaleSeconds && _petIntensity > 0f)
+            {
+                // Motors need a minimum drive to spin up, so any real stroke starts
+                // from PetMotorFloor instead of near zero.
+                float floor = HapticTuning.PetMotorFloor;
+                float pet = _petIntensity < 0.02f ? 0f :
+                    (floor + (1f - floor) * _petIntensity) * HapticTuning.PetIntensity;
+                // Pan between the shoulders; the far side keeps at least 40 % so
+                // both motors always run.
+                upperLeft = Math.Max(upperLeft, Clamp01(pet * (0.7f - 0.3f * _petSide)));
+                upperRight = Math.Max(upperRight, Clamp01(pet * (0.7f + 0.3f * _petSide)));
+            }
+
+            // Lap caress: whole body, the measured hand signal travels top to bottom.
+            // Drop the lap history once reports have stopped (missed end event).
+            if (LapSamples.Count > 0 && now - LapSamples[LapSamples.Count - 1].Time >
+                InteractionStaleSeconds + HapticTuning.LapWaveDelaySeconds * 3f + 0.3)
+                LapSamples.Clear();
+            if (LapSamples.Count > 0)
+            {
+                float lapDelay = HapticTuning.LapWaveDelaySeconds;
+                float lapGain = HapticTuning.LapIntensity;
+                AddGrowthZone(GetSampleIntensityAt(LapSamples, now) * lapGain, 1f,
+                    ref upperLeft, ref upperRight);
+                AddGrowthZone(GetSampleIntensityAt(LapSamples, now - lapDelay) * lapGain, 1f,
+                    ref midLeft, ref midRight);
+                AddGrowthZone(GetSampleIntensityAt(LapSamples, now - lapDelay * 2f) * lapGain, 1f,
+                    ref lowerLeft, ref lowerRight);
+                AddGrowthZone(GetSampleIntensityAt(LapSamples, now - lapDelay * 3f) * lapGain, 1f,
+                    ref seatLeft, ref seatRight);
+            }
+
+            // Lift / set-down: a G-force feel concentrated on the seat. Upward
+            // acceleration presses harder than the lighter downward phase.
+            if (now - _liftUpdatedAt < InteractionStaleSeconds && _liftStrength > 0f)
+            {
+                float lift = _liftStrength * HapticTuning.LiftIntensity *
+                    (_liftDirection >= 0f ? 1f : 0.6f);
+                AddGrowthZone(lift, 1.0f, ref seatLeft, ref seatRight);
+                AddGrowthZone(lift, 0.7f, ref lowerLeft, ref lowerRight);
+                AddGrowthZone(lift, 0.35f, ref midLeft, ref midRight);
+                AddGrowthZone(lift, 0.15f, ref upperLeft, ref upperRight);
+                bass = Math.Max(bass, lift * HapticTuning.LiftBassGain);
+            }
+
+            // Foot massage: every zone pulses together like rising and falling pressure.
+            if (now - _massageUpdatedAt < InteractionStaleSeconds && _massagePressure > 0f)
+            {
+                float pressure = _massagePressure * HapticTuning.FootMassagePressureIntensity;
+                AddGrowthZone(pressure, 1f, ref upperLeft, ref upperRight);
+                AddGrowthZone(pressure, 1f, ref midLeft, ref midRight);
+                AddGrowthZone(pressure, 1f, ref lowerLeft, ref lowerRight);
+                AddGrowthZone(pressure, 1f, ref seatLeft, ref seatRight);
+                bass = Math.Max(bass, pressure * HapticTuning.FootMassageBassGain);
+            }
+
             // Each SimHub output receives an independent value in the 0..1 range.
             TelemetryInputs.BassShaker = Clamp01(bass);
             TelemetryInputs.HapticUpperBackLeft = Clamp01(upperLeft);
@@ -263,6 +378,13 @@ namespace MyFirstPlugin
                 FootstepPulses.Clear();
                 HeartbeatPulses.Clear();
                 GrowthSamples.Clear();
+                LapSamples.Clear();
+                _petIntensity = 0f;
+                _petUpdatedAt = -1.0;
+                _massagePressure = 0f;
+                _massageUpdatedAt = -1.0;
+                _liftStrength = 0f;
+                _liftUpdatedAt = -1.0;
                 _outputsWereActive = false;
                 TelemetryInputs.BassShaker = 0f;
                 TelemetryInputs.HapticUpperBackLeft = 0f;
@@ -309,13 +431,18 @@ namespace MyFirstPlugin
 
         private static float GetGrowthIntensityAt(double targetTime)
         {
+            return GetSampleIntensityAt(GrowthSamples, targetTime);
+        }
+
+        private static float GetSampleIntensityAt(List<GrowthSample> samples, double targetTime)
+        {
             GrowthSample latest = default;
             bool hasSample = false;
-            for (int i = GrowthSamples.Count - 1; i >= 0; i--)
+            for (int i = samples.Count - 1; i >= 0; i--)
             {
-                if (GrowthSamples[i].Time <= targetTime)
+                if (samples[i].Time <= targetTime)
                 {
-                    latest = GrowthSamples[i];
+                    latest = samples[i];
                     hasSample = true;
                     break;
                 }
