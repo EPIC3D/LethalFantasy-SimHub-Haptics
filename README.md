@@ -21,8 +21,7 @@ drive the physical motors.
 | Menu pickup (Akipo, Twins) | A squeeze when picked up and pokes while held |
 | Lift / set-down | A G-force feel on the seat when you are lifted or lowered |
 
-Supports **LethalFantasy beta 1.0.2** (and multiple giantesses at once, e.g. the
-Twins). Version 1.0.0 targeted Alpha v9.1.0.
+Supports **LethalFantasy beta 1.0.2-1.0.3**
 
 **LethalFantasy** is made by **LadyAlice** – support the original game on
 [Patreon](https://www.patreon.com/cw/LadyAliceR18). This is an unofficial
