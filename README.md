@@ -1,7 +1,5 @@
 # LethalFantasy SimHub Haptics
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/E6Z42AUOBQ)
-
 A BepInEx plugin for **LethalFantasy** that turns in-game events into haptic
 feedback through **SimHub**. It is built for an 8-motor haptic vest/seat layout
 (e.g. HF8) plus one optional bass shaker channel.
@@ -108,3 +106,12 @@ scripts/package.ps1      Builds the release zip
 ## License
 
 [MIT](LICENSE)
+
+## Support
+
+If you enjoy the game, please support its author, LadyAlice, first:
+<https://www.patreon.com/cw/LadyAliceR18>.
+
+If you'd also like to support this mod:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/E6Z42AUOBQ)
